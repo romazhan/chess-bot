@@ -143,5 +143,5 @@ def stop_browser() -> None:
     global _browser
 
     if _browser:
-        _browser.quit()
+        _browser.close()
         _browser = None
