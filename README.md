@@ -11,8 +11,7 @@ as a FEN to the `server` to receive a hint.
 
 ```bash
 pip install -r requirements.txt
-cd bot
-python main.py
+python bot/main.py
 ```
 
 You can change important Chess Bot parameters in
@@ -22,4 +21,4 @@ You can change important Chess Bot parameters in
 
 - Windows
 - [Google Chrome Web Browser](https://www.google.com/chrome)
-- [Python](https://www.python.org/downloads) (tested on v3.8.10)
+- [Python](https://www.python.org/downloads) (tested on v3.11.4)

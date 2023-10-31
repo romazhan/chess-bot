@@ -1,7 +1,8 @@
 #-*- coding: utf-8 -*-
 from __future__ import annotations
 
-from undetected_chromedriver import Chrome as _Chrome
+from undetected_chromedriver import Chrome as _Chrome,\
+    ChromeOptions as _ChromeOptions
 from selenium.common.exceptions import\
     NoSuchWindowException as _NoSuchWindowException
 from threading import Thread as _Thread
@@ -16,7 +17,7 @@ _browser = None
 _pelmeni = 'return window.__PELMENI__;'
 
 _cook = lambda server_addr, hint_lighting: '''
-    const chessBoard = document.body.querySelector('chess-board');
+    const chessBoard = document.body.querySelector('wc-chess-board');
 
     if(!chessBoard) {
         return window.__PELMENI__ = undefined;
@@ -126,7 +127,10 @@ def start_browser(params: dict[str, str | list[str]]) -> None:
     global _browser
 
     try:
-        _browser = _Chrome()
+        chrome_options = _ChromeOptions()
+        chrome_options.headless = False
+
+        _browser = _Chrome(options=chrome_options)
 
         _browser.get(params['start_url'])
         _browser.maximize_window()

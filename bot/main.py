@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from configparser import ConfigParser as _ConfigParser
+from configparser import ConfigParser as _conf
 
 from models.engine import Engine as _Engine
 from models.server import start_server as _start_server,\
@@ -12,8 +12,8 @@ import time as _time,\
     os as _os
 
 
-def _main(c: _ConfigParser) -> None:
-    print('- Starting...')
+def _main(c: _conf) -> None:
+    print('[*] starting...')
 
     engine = _Engine({
         'Path': c['ENGINE'].get('PATH'),
@@ -35,7 +35,7 @@ def _main(c: _ConfigParser) -> None:
     })
 
     stop_command = c['SURFACE'].get('STOP_COMMAND')
-    print(f'\n- Input "{stop_command}" to stop the server and browser')
+    print(f'\n[*] input "{stop_command}" to stop the server and browser')
 
     while True:
         if input('>>> ').lower() == stop_command:
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     ROOT = _os.path.dirname(_sys.argv[0])
     ROOT and _os.chdir(ROOT)
 
-    c = _ConfigParser(converters={'ListStr': lambda l: [
+    c = _conf(converters={'ListStr': lambda l: [
         v.strip() for v in l.strip('[]').split(',')
     ]})
     not c.read('./config.ini') and _sys.exit('config.ini not found')
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     try:
         _main(c)
     except KeyboardInterrupt:
-        stop_all('- Server|browser stopped by the user')
+        stop_all('[!] server|browser stopped by the user')
     except Exception as e:
         error = f'[{_time.strftime("%Y-%m-%d %H:%M")}]: {e}'
 
@@ -68,3 +68,4 @@ if __name__ == '__main__':
             f.write(f'{error}\n')
 
         stop_all(error, 1)
+        input('\n- Press Enter to exit...')
