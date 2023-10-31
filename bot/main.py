@@ -68,4 +68,3 @@ if __name__ == '__main__':
             f.write(f'{error}\n')
 
         stop_all(error, 1)
-        input('\n- Press Enter to exit...')
