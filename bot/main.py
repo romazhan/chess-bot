@@ -62,9 +62,9 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         stop_all('[!] server|browser stopped by the user')
     except Exception as e:
-        error = f'[{_time.strftime("%Y-%m-%d %H:%M")}]: {e}'
+        e_message = f'[{_time.strftime("%Y-%m-%d %H:%M")}]: {str(e) or "@empty"}'
 
         with open(c['SURFACE'].get('ERROR_LOG'), 'a', encoding='utf-8') as f:
-            f.write(f'{error}\n')
+            f.write(f'{e_message}\n')
 
-        stop_all(error, 1)
+        stop_all(e_message, 1)
