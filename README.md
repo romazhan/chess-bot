@@ -11,11 +11,11 @@ as a FEN to the `server` to receive a hint.
 
 ```bash
 pip install -r requirements.txt
+cp config.ini.example bot/config.ini
 python bot/main.py
 ```
 
-You can change important Chess Bot parameters in
-[config.ini](bot/config.ini).
+You can change important Chess Bot parameters in `config.ini`.
 
 ## Global Dependencies
 

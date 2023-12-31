@@ -1,28 +1,27 @@
 #-*- coding: utf-8 -*-
 from __future__ import annotations
 
-from undetected_chromedriver import Chrome as _Chrome,\
-    ChromeOptions as _ChromeOptions
-from selenium.common.exceptions import\
-    NoSuchWindowException as _NoSuchWindowException
-from threading import Thread as _Thread
+from undetected_chromedriver import (
+    Chrome, ChromeOptions
+)
+from selenium.common.exceptions import (
+    NoSuchWindowException
+)
+from threading import Thread
 
-import time as _time,\
-    gc as _gc
+import time, gc
 
 
 _browser = None
-
 
 _pelmeni = 'return window.__PELMENI__;'
 
 _cook = lambda server_addr, hint_lighting: '''
     const chessBoard = document.body.querySelector('wc-chess-board');
 
-    if(!chessBoard) {
+    if (!chessBoard) {
         return window.__PELMENI__ = undefined;
     }
-
     window.__PELMENI__ = 'yum-yum, juicy';
 
     const getBestMoveByFen = async fen => {
@@ -36,12 +35,14 @@ _cook = lambda server_addr, hint_lighting: '''
 
     const getSqrNumsFrom = m => {
         const getSqrNum = s => `${s.charCodeAt(0) - 96}${s.charAt(1)}`;
-        return [getSqrNum(`${m[0]}${m[1]}`), getSqrNum(`${m[2]}${m[3]}`)];
+        return [
+            getSqrNum(`${m[0]}${m[1]}`), getSqrNum(`${m[2]}${m[3]}`)
+        ];
     };
 
     const highlightSqr = (sqrNum, color) => {
         const sqr = chessBoard.querySelector(`.piece.square-${sqrNum}`);
-        if(sqr) {
+        if (sqr) {
             return sqr.style.backgroundColor = color;
         }
 
@@ -60,7 +61,7 @@ _cook = lambda server_addr, hint_lighting: '''
     (() => {
         chessBoard.addEventListener('mousedown', e => {
             const piece = e.target.closest('.piece');
-            if(piece) {
+            if (piece) {
                 piece.style.backgroundColor = '';
             }
         });
@@ -73,7 +74,7 @@ _cook = lambda server_addr, hint_lighting: '''
 
         const suggestMove = async () => {
             const bestMove = await getBestMoveByFen(game.getFEN());
-            if(bestMove) {
+            if (bestMove) {
                 const [sqrNumFrom, sqrNumTo] = getSqrNumsFrom(bestMove);
 
                 const hintColor = hintLightingShift[hintLightingShift[2] ^= 1];
@@ -88,7 +89,7 @@ _cook = lambda server_addr, hint_lighting: '''
             let inProgress = false;
 
             game.on('Move', async () => {
-                if(inProgress) {
+                if (inProgress) {
                     return;
                 }
 
@@ -99,7 +100,6 @@ _cook = lambda server_addr, hint_lighting: '''
     })();
 '''
 
-
 def _observe(server_addr: str, hint_lighting: list[str]) -> None:
     while True:
         if not _browser:
@@ -108,7 +108,7 @@ def _observe(server_addr: str, hint_lighting: list[str]) -> None:
         try:
             if not _browser.execute_script(_pelmeni):
                 _browser.execute_script(_cook(server_addr, hint_lighting))
-        except _NoSuchWindowException:
+        except NoSuchWindowException:
             stop_browser()
             break
         except Exception as e:
@@ -118,30 +118,28 @@ def _observe(server_addr: str, hint_lighting: list[str]) -> None:
             stop_browser()
             raise Exception(f'[browser][observe][error]: {str(e).splitlines()[0]}')
         finally:
-            _gc.collect()
+            gc.collect()
 
-        _time.sleep(1.7)
-
+        time.sleep(1.8)
 
 def start_browser(params: dict[str, str | list[str]]) -> None:
     global _browser
 
     try:
-        chrome_options = _ChromeOptions()
+        chrome_options = ChromeOptions()
         chrome_options.headless = False
 
-        _browser = _Chrome(options=chrome_options)
+        _browser = Chrome(options=chrome_options)
 
         _browser.get(params['start_url'])
         _browser.maximize_window()
 
-        _Thread(target=_observe, args=(
+        Thread(target=_observe, args=(
             params['server_addr'],
             params['hint_lighting']
         )).start()
-    except _NoSuchWindowException:
+    except NoSuchWindowException:
         stop_browser()
-
 
 def stop_browser() -> None:
     global _browser

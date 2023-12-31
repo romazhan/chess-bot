@@ -4,5 +4,8 @@ __pycache__/
 # Environments
 venv/
 
+# Configs
+config.ini
+
 # Logs
 error.log

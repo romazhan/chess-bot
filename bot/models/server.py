@@ -1,17 +1,17 @@
 #-*- coding: utf-8 -*-
-from .engine import Engine as _Engine
+from http.server import (
+    HTTPServer, BaseHTTPRequestHandler
+)
+from threading import Thread
 
-from http.server import HTTPServer as _HttpServer,\
-    BaseHTTPRequestHandler as _BaseHttpRequestHandler
-from threading import Thread as _Thread
+from .engine import Engine
 
-import json as _json
+import json
 
 
 _engine, _server, _server_thread = None, None, None
 
-
-class _HttpRequestHandler(_BaseHttpRequestHandler):
+class _HttpRequestHandler(BaseHTTPRequestHandler):
     def log_message(self, *_: any) -> None:
         pass
 
@@ -26,7 +26,7 @@ class _HttpRequestHandler(_BaseHttpRequestHandler):
         self.do_headers()
         self.end_headers()
 
-        fen = _json.loads(self.rfile.read(
+        fen = json.loads(self.rfile.read(
             int(self.headers.get('Content-Length'))
         ))['fen']
 
@@ -44,20 +44,18 @@ class _HttpRequestHandler(_BaseHttpRequestHandler):
         self.wfile.write(get_best_move(fen).encode('utf-8'))
         self.connection.shutdown(1)
 
-
-def start_server(engine: _Engine, port: int = 667) -> str:
+def start_server(engine: Engine, port: int = 667) -> str:
     global _engine, _server, _server_thread
 
     host = '127.0.0.1'
 
     _engine = engine
-    _server = _HttpServer((host, port), _HttpRequestHandler)
-    _server_thread = _Thread(target=_server.serve_forever)
+    _server = HTTPServer((host, port), _HttpRequestHandler)
+    _server_thread = Thread(target=_server.serve_forever)
 
     _server_thread.start()
 
     return f'http://{host}:{port}'
-
 
 def stop_server() -> None:
     if _server_thread.is_alive():

@@ -1,9 +1,5 @@
 [SURFACE]
 STOP_COMMAND = stop
-ERROR_LOG = ./error.log
-
-[SERVER]
-PORT = 8123
 
 [ENGINE]
 PATH = ./engine/stockfish_15.1_win_x64.exe
@@ -13,6 +9,9 @@ HASH = 256
 ELO = 2850
 DEPTH = 20
 CONTEMPT = 10
+
+[SERVER]
+PORT = 8123
 
 [BROWSER]
 START_URL = https://www.chess.com/play/online

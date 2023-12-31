@@ -1,10 +1,10 @@
 #-*- coding: utf-8 -*-
 from __future__ import annotations
 
-from stockfish import Stockfish as _Stockfish
+from stockfish import Stockfish
 
 
-class Engine(_Stockfish):
+class Engine(Stockfish):
     _params: dict[str, any]
     _max_thinking_time: int
 
@@ -13,7 +13,6 @@ class Engine(_Stockfish):
         self._max_thinking_time = params['Maximum Thinking Time']
 
         path, depth = params['Path'], params['Depth']
-
         del params['Maximum Thinking Time'], params['Path'], params['Depth']
 
         super().__init__(path=path, depth=depth, parameters=params)
