@@ -20,5 +20,5 @@ You can change important Chess Bot parameters in `config.ini`.
 ## Global Dependencies
 
 - Windows
-- [Google Chrome Web Browser](https://www.google.com/chrome)
-- [Python](https://www.python.org/downloads) (tested on v3.11.4)
+- [Google Chrome](https://www.google.com/chrome) (tested on v132.0.6834.84)
+- [Python](https://www.python.org/downloads/release/python-3131/) (tested on v3.13.1)

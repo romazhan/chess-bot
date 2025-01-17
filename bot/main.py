@@ -1,73 +1,73 @@
-#-*- coding: utf-8 -*-
 from configparser import ConfigParser
-
-from models.engine import Engine
-from models.server import (
-    start_server, stop_server
+from src.engine import Engine
+from src.server import (
+    start_server,
+    stop_server
 )
-from models.browser import (
-    start_browser, stop_browser
+from src.browser import (
+    start_browser,
+    stop_browser
 )
-
 import time, sys, os
 
 
 _CONFIG_FILE_PATH = './config.ini'
+_ERROR_FILE_PATH = './error.log'
 
 def _main(confdad: ConfigParser) -> None:
     print('[*] starting...')
 
     engine = Engine({
-        'Path': confdad['ENGINE'].get('PATH'),
-        'Hash': confdad['ENGINE'].getint('HASH'),
-        'Depth': confdad['ENGINE'].getint('DEPTH'),
-        'UCI_Elo': confdad['ENGINE'].getint('ELO'),
-        'Threads': confdad['ENGINE'].getint('THREADS'),
-        'Contempt': confdad['ENGINE'].getint('CONTEMPT'),
-        'Maximum Thinking Time': confdad['ENGINE'].getint('MOVE_MAX_TIME'),
-        # 'Ponder': True # perhaps there is no point due to the constant change of position on FEN
+        'Path': confdad['ENGINE'].get('path'),
+        'Hash': confdad['ENGINE'].getint('hash'),
+        'Depth': confdad['ENGINE'].getint('depth'),
+        'UCI_Elo': confdad['ENGINE'].getint('elo'),
+        'Threads': confdad['ENGINE'].getint('threads'),
+        'Contempt': confdad['ENGINE'].getint('contempt'),
+        'Maximum Thinking Time': confdad['ENGINE'].getint('move_max_time')
     })
 
-    server_addr = start_server(engine, confdad['SERVER'].getint('PORT'))
+    server_addr = start_server(engine, confdad['SERVER'].getint('port'))
 
-    start_browser({
-        'hint_lighting': confdad['BROWSER'].getliststr('HINT_LIGHTING'),
-        'start_url': confdad['BROWSER'].get('START_URL'),
-        'server_addr': server_addr
-    })
+    start_browser(
+        start_url=confdad['BROWSER'].get('start_url'),
+        server_addr=server_addr,
+        hint_lighting=confdad['SURFACE'].gettuplestr('hint_lighting')
+    )
 
-    stop_command = confdad['SURFACE'].get('STOP_COMMAND')
-    print(f'\n[*] input "{stop_command}" to stop the server and browser')
+    stop_commands = confdad['SURFACE'].gettuplestr('stop_commands')
+    print(f'\n[*] input {'|'.join(stop_commands)} to stop the server and browser')
 
     while True:
-        if input('>>> ').lower() == stop_command:
+        if input('>>> ').strip().lower() in stop_commands:
             raise KeyboardInterrupt
+
+def _stop_all(msg: str, code: int = 0) -> None:
+    stop_server(), stop_browser()
+
+    print(f'\n{msg}')
+    sys.exit(code)
 
 if __name__ == '__main__':
     ROOT = os.path.dirname(sys.argv[0])
     ROOT and os.chdir(ROOT)
 
     confdad = ConfigParser(converters={
-        'liststr': lambda l: [
-            v.strip() for v in l.strip('[]').split(',')
-        ]
+        'tuplestr': lambda s: tuple(
+            v.strip() for v in s.strip('()').split(',')
+        )
     })
     assert confdad.read(_CONFIG_FILE_PATH), f'{_CONFIG_FILE_PATH} not found'
-
-    def stop_all(msg: str, code: int = 0) -> None:
-        stop_server(), stop_browser()
-
-        print(f'\n{msg}')
-        sys.exit(code)
 
     try:
         _main(confdad)
     except KeyboardInterrupt:
-        stop_all('[!] server|browser stopped by the user')
-    except Exception as e:
-        e_message = f'[{time.strftime("%Y-%m-%d %H:%M")}]: {str(e) or "@empty"}'
+        _stop_all('[!] server|browser stopped by the user')
+    except Exception as unknown_error:
+        unknown_error_message = f'[{time.strftime("%d.%m.%Y, %H:%M:%S")}]: {str(unknown_error) or "__empty__"}'
 
-        with open('error.log', 'a', encoding='utf-8') as f:
-            f.write(f'{e_message}\n')
+        print(f'\n{unknown_error_message}')
+        with open(_ERROR_FILE_PATH, 'a', encoding='utf-8') as f:
+            f.write(f'{unknown_error_message}\n')
 
-        stop_all(e_message, 1)
+        _stop_all(unknown_error_message, code=1)
