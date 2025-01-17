@@ -64,7 +64,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         _stop_all('[!] server|browser stopped by the user')
     except Exception as unknown_error:
-        unknown_error_message = f'[{time.strftime("%d.%m.%Y, %H:%M:%S")}]: {str(unknown_error) or "__empty__"}'
+        unknown_error_message = f'[{time.strftime('%d.%m.%Y, %H:%M:%S')}]: {str(unknown_error) or '__empty__'}'
 
         print(f'\n{unknown_error_message}')
         with open(_ERROR_FILE_PATH, 'a', encoding='utf-8') as f:
