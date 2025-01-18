@@ -30,6 +30,7 @@ def _main(confdad: ConfigParser) -> None:
     server_addr = start_server(engine, confdad['SERVER'].getint('port'))
 
     start_browser(
+        use_existing_profile=confdad['BROWSER'].getboolean('use_existing_profile'),
         start_url=confdad['BROWSER'].get('start_url'),
         server_addr=server_addr,
         hint_lighting=confdad['SURFACE'].gettuplestr('hint_lighting')

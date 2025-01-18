@@ -12,6 +12,7 @@ depth = 15
 contempt = 0
 
 [BROWSER]
+use_existing_profile = false
 start_url = https://www.chess.com/play/online
 
 [SERVER]

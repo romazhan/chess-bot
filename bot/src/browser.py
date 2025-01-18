@@ -130,6 +130,7 @@ def _observe(server_addr: str, hint_lighting: Iterable[str]) -> None:
         time.sleep(1.75)
 
 def start_browser(
+    use_existing_profile: bool,
     start_url: str,
     server_addr: str,
     hint_lighting: Iterable[str] = ('e2859a', 'bd7873')
@@ -137,7 +138,8 @@ def start_browser(
     global _browser
 
     chrome_options = ChromeOptions()
-    chrome_options.headless = False
+    if use_existing_profile:
+        chrome_options.add_argument('--user-data-dir')
 
     _browser = Chrome(options=chrome_options)
 
