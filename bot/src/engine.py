@@ -21,8 +21,16 @@ class Engine(Stockfish):
             parameters=params
         )
 
-    def get_best_move_time(self) -> str | None:
-        return super().get_best_move_time(self._max_thinking_time)
+    def get_best_move_by_fen(self, fen: str) -> str:
+        try:
+            self.set_fen_position(fen)
+
+            return super().get_best_move_time(self._max_thinking_time) or ''
+        except Exception as e:
+            print(f'[engine][error]: {e}')
+            self.restart()
+
+            return self.get_best_move_by_fen(fen) # ? infinite recursion
 
     def restart(self) -> None:
         self.__init__(self._params)

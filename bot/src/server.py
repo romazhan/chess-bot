@@ -31,19 +31,8 @@ class _HttpRequestHandler(BaseHTTPRequestHandler):
             int(self.headers.get('Content-Length'))
         ))['fen']
 
-        def get_best_move(fen: str) -> str:
-            try:
-                _engine.set_fen_position(fen)
-                return _engine.get_best_move_time() or ''
-            except Exception as e:
-                print(f'[server][engine][error]: {e}')
-                print(f'[server][engine]: restarting...')
-
-                _engine.restart()
-                return get_best_move(fen) # ? infinite recursion
-
         try:
-            self.wfile.write(get_best_move(fen).encode('utf-8'))
+            self.wfile.write(_engine.get_best_move_by_fen(fen).encode('utf-8'))
             self.connection.shutdown(1)
         except ConnectionAbortedError:
             pass
