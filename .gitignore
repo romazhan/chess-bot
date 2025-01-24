@@ -4,8 +4,12 @@ __pycache__/
 # Environments
 venv/
 
-# Configs
-config.ini
+# Config
+bot/config.ini
 
-# Logs
-error.log
+# Log
+bot/error.log
+
+# Built files
+bot/ChessBot.exe
+bot/.tmp/

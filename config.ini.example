@@ -3,7 +3,7 @@ stop_commands = (exit, stop, close)
 hint_lighting = (e2859a, bd7873)
 
 [ENGINE]
-path = ./engine/stockfish-windows-x86-64-avx2.exe
+path = ./engines/stockfish-17/stockfish-windows-x86-64-avx2.exe
 move_max_time = 375
 threads = 6
 hash = 1024

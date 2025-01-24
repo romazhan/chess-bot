@@ -50,17 +50,16 @@ def _stop_all(msg: str, code: int = 0) -> None:
     sys.exit(code)
 
 if __name__ == '__main__':
-    ROOT = os.path.dirname(sys.argv[0])
-    ROOT and os.chdir(ROOT)
-
-    confdad = ConfigParser(converters={
-        'tuplestr': lambda s: tuple(
-            v.strip() for v in s.strip('()').split(',')
-        )
-    })
-    assert confdad.read(_CONFIG_FILE_PATH), f'{_CONFIG_FILE_PATH} not found'
+    os.chdir(os.path.dirname(sys.argv[0]) or '.')
 
     try:
+        confdad = ConfigParser(converters={
+            'tuplestr': lambda s: tuple(
+                v.strip() for v in s.strip('()').split(',')
+            )
+        })
+        assert confdad.read(_CONFIG_FILE_PATH), f'{_CONFIG_FILE_PATH} not found'
+
         _main(confdad)
     except KeyboardInterrupt:
         _stop_all('[!] server|browser stopped by the user')

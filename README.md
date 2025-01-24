@@ -17,8 +17,14 @@ python bot/main.py
 
 You can change important Chess Bot parameters in `config.ini`.
 
+## Compilation
+
+```bash
+python bot/compile.py
+```
+
 ## Global Dependencies
 
 - Windows
 - [Python](https://www.python.org/downloads/release/python-3131/) (tested on v3.13.1)
-- [Google Chrome](https://www.google.com/chrome) (tested on v132.0.6834.84)
+- [Google Chrome](https://www.google.com/chrome/) (tested on v132.0.6834.84)
