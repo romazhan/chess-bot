@@ -1,2 +1,2 @@
 # Engines
-bot/engines/ linguist-detectable=false
+bot/engines/* linguist-detectable=false
