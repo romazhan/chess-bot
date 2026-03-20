@@ -27,4 +27,4 @@ python bot/compile.py
 
 - Windows
 - [Python](https://www.python.org/downloads/release/python-3131/) (tested on v3.13.1)
-- [Google Chrome](https://www.google.com/chrome/) (tested on v136.0.7103.49)
+- [Google Chrome](https://www.google.com/chrome/) (tested on v146.0.7680.80)

@@ -16,6 +16,11 @@ _browser = None
 _pelmeni = 'return window.__PELMENI__;'
 
 _cook = lambda server_addr, hint_lighting: '''
+    const _iframe = document.createElement('iframe');
+    document.body.appendChild(_iframe);
+
+    const nativeFetch = _iframe.contentWindow.fetch;
+
     const chessBoard = document.body.querySelector('wc-chess-board');
 
     if (!chessBoard) {
@@ -24,7 +29,7 @@ _cook = lambda server_addr, hint_lighting: '''
     window.__PELMENI__ = 'yum-yum, juicy';
 
     const getBestMoveByFen = async (fen, signal) => {
-        return await fetch("''' + server_addr + '''", {
+        return await nativeFetch("''' + server_addr + '''", {
             method: 'POST',
             body: JSON.stringify({fen}),
             signal
@@ -138,6 +143,10 @@ def start_browser(
     global _browser
 
     chrome_options = ChromeOptions()
+
+    chrome_options.add_argument('--disable-web-security')
+    # chrome_options.add_argument('--disable-features=BlockInsecurePrivateNetworkRequests')
+
     if use_existing_profile:
         chrome_options.add_argument('--user-data-dir')
 
