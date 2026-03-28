@@ -150,7 +150,10 @@ def start_browser(
     if use_existing_profile:
         chrome_options.add_argument('--user-data-dir')
 
-    _browser = Chrome(options=chrome_options)
+    _browser = Chrome(
+        options=chrome_options,
+        version_main=146
+    )
 
     _browser.get(start_url)
     _browser.maximize_window()
