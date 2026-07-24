@@ -30,8 +30,9 @@ def _main(confdad: ConfigParser) -> None:
     server_addr = start_server(engine, confdad['SERVER'].getint('port'))
 
     start_browser(
-        use_existing_profile=confdad['BROWSER'].getboolean('use_existing_profile'),
+        version_main=confdad['BROWSER'].getoptint('version_main'),
         start_url=confdad['BROWSER'].get('start_url'),
+        use_existing_profile=confdad['BROWSER'].getboolean('use_existing_profile'),
         server_addr=server_addr,
         hint_lighting=confdad['SURFACE'].gettuplestr('hint_lighting')
     )
@@ -56,7 +57,8 @@ if __name__ == '__main__':
         confdad = ConfigParser(converters={
             'tuplestr': lambda s: tuple(
                 v.strip() for v in s.strip('()').split(',')
-            )
+            ),
+            'optint': lambda s: int(s) if s.strip() else None
         })
         assert confdad.read(_CONFIG_FILE_PATH), f'{_CONFIG_FILE_PATH} not found'
 

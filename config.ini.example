@@ -12,8 +12,9 @@ depth = 15
 contempt = 0
 
 [BROWSER]
-use_existing_profile = false
+version_main = 150
 start_url = https://www.chess.com/play/online
+use_existing_profile = false
 
 [SERVER]
 port = 8123

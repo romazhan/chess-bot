@@ -135,25 +135,32 @@ def _observe(server_addr: str, hint_lighting: Iterable[str]) -> None:
         time.sleep(1.75)
 
 def start_browser(
-    use_existing_profile: bool,
+    version_main: int | None,
     start_url: str,
+    use_existing_profile: bool,
     server_addr: str,
     hint_lighting: Iterable[str] = ('e2859a', 'bd7873')
 ) -> None:
     global _browser
 
-    chrome_options = ChromeOptions()
+    def build_chrome_options() -> ChromeOptions:
+        chrome_options = ChromeOptions()
 
-    chrome_options.add_argument('--disable-web-security')
-    # chrome_options.add_argument('--disable-features=BlockInsecurePrivateNetworkRequests')
+        chrome_options.add_argument('--disable-web-security')
+        # chrome_options.add_argument('--disable-features=BlockInsecurePrivateNetworkRequests')
 
-    if use_existing_profile:
-        chrome_options.add_argument('--user-data-dir')
+        if use_existing_profile:
+            chrome_options.add_argument('--user-data-dir')
 
-    _browser = Chrome(
-        options=chrome_options,
-        version_main=146
-    )
+        return chrome_options
+
+    if version_main is None:
+        _browser = Chrome(options=build_chrome_options())
+    else:
+        _browser = Chrome(
+            options=build_chrome_options(),
+            version_main=version_main
+        )
 
     _browser.get(start_url)
     _browser.maximize_window()
